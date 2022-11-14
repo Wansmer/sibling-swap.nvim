@@ -3,6 +3,8 @@
 Neovim plugin to swap places of siblings, e.g., arguments, parameters, attributes, pairs e.t.c., which places on same line and separated by `allowed_separators` or space.
 No need to set up specific language – works from scratch with all languages supported by [Tree-Sitter](https://tree-sitter.github.io/tree-sitter/).
 
+https://user-images.githubusercontent.com/46977173/201652296-5f848781-d4cd-4972-9914-0781525e4e43.mov
+
 ## Requirements
 
 1. [Neovim 0.8+](https://github.com/neovim/neovim/releases)
