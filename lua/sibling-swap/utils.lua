@@ -1,0 +1,135 @@
+local query = require('vim.treesitter.query')
+local settings = require('sibling-swap.settings').settings
+
+local ALLOWED_SEPARATORS = settings.allowed_separators
+local LEFT = 'left'
+local M = {}
+
+---Checking if siblings placed on same line
+---@param node userdata TSNode instance
+---@param sibling userdata TSNode instance
+---@return boolean
+local function is_siblings_on_same_line(node, sibling)
+  local range = { node:range() }
+  local s_range = { sibling:range() }
+  return range[1] == range[3]
+    and s_range[1] == s_range[3]
+    and range[1] == s_range[1]
+    and range[3] == s_range[3]
+end
+
+---Checking if both siblings are named
+---@param node userdata TSNode instance
+---@param sibling userdata TSNode instance
+---@return boolean
+local function is_both_siblings_named(node, sibling)
+  return node:named() and sibling:named()
+end
+
+local function check_siblings(node, sibling)
+  return is_siblings_on_same_line(node, sibling)
+    and is_both_siblings_named(node, sibling)
+end
+
+local function is_allowed_sep(sibling)
+  return vim.tbl_contains(ALLOWED_SEPARATORS, sibling:type())
+end
+
+---Checking if siblings has one or more space between each other
+---@param node userdata TSNode instance
+---@param sibling userdata TSNode instance
+---@return boolean
+local function has_space_between(node, sibling)
+  local nr = { node:range() }
+  local sr = { sibling:range() }
+  return math.max(nr[2], sr[2]) - math.min(sr[4], nr[4]) >= 1
+end
+
+---Checking if siblings match the conditions
+---@param node userdata TSNode instance
+---@param named_sibling userdata|nil TSNode instance
+---@param sibling userdata|nil TSNode instance
+local function is_suitable_nodes(node, named_sibling, sibling)
+  if not named_sibling then
+    return false
+  end
+
+  local checked = check_siblings(node, named_sibling)
+
+  if named_sibling == sibling then
+    return checked and has_space_between(node, named_sibling)
+  else
+    return checked and is_allowed_sep(sibling)
+  end
+end
+
+---Get candidates to swapping
+---@param node userdata TSNode instance
+---@param side userdata TSNode instance
+---@return userdata|nil, userdata|nil
+local function get_candidates(node, side)
+  if side == LEFT then
+    return node:prev_sibling(), node:prev_named_sibling()
+  end
+  return node:next_sibling(), node:next_named_sibling()
+end
+
+function M.get_suitable_siblings(node, side)
+  if not node then
+    return
+  end
+
+  local sibling, named_sibling = get_candidates(node, side)
+  local suited = is_suitable_nodes(node, named_sibling, sibling)
+
+  if suited then
+    return side == LEFT and { named_sibling, node } or { node, named_sibling }
+  else
+    return M.get_suitable_siblings(node:parent(), side)
+  end
+end
+
+---Get the node length
+---@param range integer[]
+---@return integer
+local function len(range)
+  return range[4] - range[2]
+end
+
+---Swapping ranges of nodes and return a table `{ { text: of right node, range: of left node }, { text: of left node, range: of right node } }`
+---@param siblings userdata[] TSNode instances
+---@return table
+function M.swap_siblings_ranges(siblings)
+  local swapped = {}
+  for idx = #siblings, 1, -1 do
+    local text = query.get_node_text(siblings[idx], 0, { concat = false })
+    local reversed_idx = #siblings - idx + 1
+
+    local range = { siblings[reversed_idx]:range() }
+    table.insert(swapped, { text = text, range = range })
+  end
+  return swapped
+end
+
+---Calculate new position for cursor
+---@param repl table
+---@param side string
+---@return table
+function M.calc_cursor(repl, side)
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local actual_right_range = repl[2].range
+  local actual_left_range = repl[1].range
+
+  if side == LEFT then
+    local pos_in_node = cursor[2] - actual_right_range[2]
+    cursor[2] = pos_in_node + actual_left_range[2]
+  else
+    local pos_in_node = cursor[2] - actual_left_range[2]
+    local left_len = len(actual_left_range)
+    local right_len = len(actual_right_range)
+    cursor[2] = actual_right_range[2] + pos_in_node + (right_len - left_len)
+  end
+  return cursor
+end
+
+return M
