@@ -4,7 +4,8 @@ Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attr
 
 * **Zero-config (almost)**: No need to setup specific language – should works from scratch with all languages supported by [Tree-Sitter](https://tree-sitter.github.io/tree-sitter/);
 * **Simple**: Just grab this node and move;
-* **Smart**: Able to replace operand in binary expressions and Mathematical operations to opposite[^1];
+* **Sticky-cursor**: The cursor follows the text on which it was called;
+* **Smart**: Able to replace operand in binary expressions and Mathematical operations to opposite[^1].
 
 > [^1]: If you want to swap operand and operators with by one key from anywhere in binary expressions, look at [binary-swap.nvim](https://github.com/Wansmer/binary-swap.nvim)
 
