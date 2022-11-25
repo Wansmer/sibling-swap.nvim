@@ -9,7 +9,7 @@ Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attr
 
 > [^1]: If you want to swap operand and operators with by one key from anywhere in binary expressions, look at [binary-swap.nvim](https://github.com/Wansmer/binary-swap.nvim)
 
-<https://user-images.githubusercontent.com/46977173/201652296-5f848781-d4cd-4972-9914-0781525e4e43.mov>
+<https://user-images.githubusercontent.com/46977173/203991867-c80abbd3-e3de-4af9-b721-252c03d44e5f.mov>
 
 ## Requirements
 
