@@ -10,17 +10,23 @@ local M = {}
 
 ---Swaps the node under the cursor with the (left/right) sibling
 ---@param side string left/right
-function M.swap_with(side)
+---@param swap_unnamed? boolean Swap operator to opposite
+function M.swap_with(side, swap_unnamed)
+  swap_unnamed = swap_unnamed or false
+
   local node = ts_utils.get_node_at_cursor(0, settings.ignore_injected_langs)
+
   local siblings = u.get_suitable_siblings(node, side)
   if siblings then
-    local replacement = u.swap_siblings_ranges(siblings)
+    local replacement = u.swap_siblings_ranges(siblings, swap_unnamed)
     local cursor = u.calc_cursor(replacement, side)
+
     for i = #replacement, 1, -1 do
       local sr, sc, er, ec = unpack(replacement[i].range)
       vim.api.nvim_buf_set_text(0, sr, sc, er, ec, replacement[i].text)
     end
-    vim.api.nvim_win_set_cursor(0, cursor)
+
+    pcall(vim.api.nvim_win_set_cursor, 0, cursor)
   end
 end
 
