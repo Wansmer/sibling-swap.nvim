@@ -32,7 +32,7 @@ local function check_siblings(node, sibling)
 end
 
 local function is_allowed_sep(sibling)
-  return vim.tbl_contains(ALLOWED_SEPARATORS, sibling:type())
+  return vim.tbl_contains(vim.tbl_keys(ALLOWED_SEPARATORS), sibling:type())
 end
 
 ---Checking if siblings has one or more space between each other
@@ -43,6 +43,10 @@ local function has_space_between(node, sibling)
   local nr = { node:range() }
   local sr = { sibling:range() }
   return math.max(nr[2], sr[2]) - math.min(sr[4], nr[4]) >= 1
+end
+
+local function has_unnamed(named_sibling, sibling)
+  return named_sibling ~= sibling
 end
 
 ---Checking if siblings match the conditions
@@ -56,7 +60,7 @@ local function is_suitable_nodes(node, named_sibling, sibling)
 
   local checked = check_siblings(node, named_sibling)
 
-  if named_sibling == sibling then
+  if not has_unnamed(named_sibling, sibling) then
     return checked and has_space_between(node, named_sibling)
   else
     return checked and is_allowed_sep(sibling)
@@ -83,6 +87,10 @@ function M.get_suitable_siblings(node, side)
   local suited = is_suitable_nodes(node, named_sibling, sibling)
 
   if suited then
+    if has_unnamed(named_sibling, sibling) then
+      return side == LEFT and { named_sibling, sibling, node }
+        or { node, sibling, named_sibling }
+    end
     return side == LEFT and { named_sibling, node } or { node, named_sibling }
   else
     return M.get_suitable_siblings(node:parent(), side)
@@ -98,11 +106,15 @@ end
 
 ---Swapping ranges of nodes and return a table `{ { text: of right node, range: of left node }, { text: of left node, range: of right node } }`
 ---@param siblings userdata[] TSNode instances
+---@param swap_unnamed boolean
 ---@return table
-function M.swap_siblings_ranges(siblings)
+function M.swap_siblings_ranges(siblings, swap_unnamed)
   local swapped = {}
   for idx = #siblings, 1, -1 do
     local text = query.get_node_text(siblings[idx], 0, { concat = false })
+    if swap_unnamed and is_allowed_sep(siblings[idx]) then
+      text = { ALLOWED_SEPARATORS[text[1]] }
+    end
     local reversed_idx = #siblings - idx + 1
 
     local range = { siblings[reversed_idx]:range() }
@@ -117,7 +129,7 @@ end
 ---@return table
 function M.calc_cursor(repl, side)
   local cursor = vim.api.nvim_win_get_cursor(0)
-  local actual_right_range = repl[2].range
+  local actual_right_range = repl[#repl].range
   local actual_left_range = repl[1].range
 
   if side == LEFT then
