@@ -59,19 +59,13 @@ local function is_suitable_nodes(node, named_sibling, sibling)
     return false
   end
 
-  local checked = check_siblings(node, named_sibling)
-
-  if not has_unnamed(named_sibling, sibling) then
-    return checked
-      and (
-        (
-          is_siblings_on_same_line(node, named_sibling)
-          and has_space_between(node, named_sibling)
-        ) or is_allowed_sep(named_sibling)
-      )
-  else
-    return checked and is_allowed_sep(sibling)
-  end
+  local is_space_between_allowed = not has_unnamed(named_sibling, sibling)
+    and is_siblings_on_same_line(node, named_sibling)
+  return check_siblings(node, named_sibling)
+    and (
+      (is_space_between_allowed and has_space_between(node, named_sibling))
+      or is_allowed_sep(named_sibling)
+    )
 end
 
 ---Get candidates to swapping
