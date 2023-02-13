@@ -62,7 +62,13 @@ local function is_suitable_nodes(node, named_sibling, sibling)
   local checked = check_siblings(node, named_sibling)
 
   if not has_unnamed(named_sibling, sibling) then
-    return checked and ((is_siblings_on_same_line(node, named_sibling) and has_space_between(node, named_sibling)) or is_allowed_sep(named_sibling))
+    return checked
+      and (
+        (
+          is_siblings_on_same_line(node, named_sibling)
+          and has_space_between(node, named_sibling)
+        ) or is_allowed_sep(named_sibling)
+      )
   else
     return checked and is_allowed_sep(sibling)
   end
@@ -127,7 +133,8 @@ function M.calc_cursor(repl, side)
   local actual_left_range = repl[1].range
 
   if side == LEFT then
-    local pos_in_node = {cursor[1] - actual_right_range[1], cursor[2] - actual_right_range[2]}
+    local pos_in_node =
+      { cursor[1] - actual_right_range[1], cursor[2] - actual_right_range[2] }
     cursor[2] = pos_in_node[2] + actual_left_range[2]
     cursor[1] = pos_in_node[1] + actual_left_range[1]
   else
