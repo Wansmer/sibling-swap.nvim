@@ -2,6 +2,7 @@ local query = require('vim.treesitter.query')
 local settings = require('sibling-swap.settings').settings
 
 local ALLOWED_SEPARATORS = settings.allowed_separators
+local ALLOW_INTERLINE_SWAPS = settings.allow_interline_swaps
 local LEFT = 'left'
 local M = {}
 
@@ -27,7 +28,7 @@ local function is_both_siblings_named(node, sibling)
 end
 
 local function check_siblings(node, sibling)
-  return is_siblings_on_same_line(node, sibling)
+  return (ALLOW_INTERLINE_SWAPS or is_siblings_on_same_line(node, sibling))
     and is_both_siblings_named(node, sibling)
 end
 
@@ -35,7 +36,7 @@ local function is_allowed_sep(sibling)
   return vim.tbl_contains(vim.tbl_keys(ALLOWED_SEPARATORS), sibling:type())
 end
 
----Checking if siblings has one or more space between each other
+---Checking if siblings have one or more spaces between each other
 ---@param node userdata TSNode instance
 ---@param sibling userdata TSNode instance
 ---@return boolean
@@ -61,7 +62,7 @@ local function is_suitable_nodes(node, named_sibling, sibling)
   local checked = check_siblings(node, named_sibling)
 
   if not has_unnamed(named_sibling, sibling) then
-    return checked and has_space_between(node, named_sibling)
+    return checked and ((is_siblings_on_same_line(node, named_sibling) and has_space_between(node, named_sibling)) or is_allowed_sep(named_sibling))
   else
     return checked and is_allowed_sep(sibling)
   end
@@ -97,13 +98,6 @@ function M.get_suitable_siblings(node, side)
   end
 end
 
----Get the node length
----@param range integer[]
----@return integer
-local function len(range)
-  return range[4] - range[2]
-end
-
 ---Swapping ranges of nodes and return a table `{ { text: of right node, range: of left node }, { text: of left node, range: of right node } }`
 ---@param siblings userdata[] TSNode instances
 ---@param swap_unnamed boolean
@@ -133,13 +127,14 @@ function M.calc_cursor(repl, side)
   local actual_left_range = repl[1].range
 
   if side == LEFT then
-    local pos_in_node = cursor[2] - actual_right_range[2]
-    cursor[2] = pos_in_node + actual_left_range[2]
+    local pos_in_node = {cursor[1] - actual_right_range[1], cursor[2] - actual_right_range[2]}
+    cursor[2] = pos_in_node[2] + actual_left_range[2]
+    cursor[1] = pos_in_node[1] + actual_left_range[1]
   else
-    local pos_in_node = cursor[2] - actual_left_range[2]
-    local left_len = len(actual_left_range)
-    local right_len = len(actual_right_range)
-    cursor[2] = actual_right_range[2] + pos_in_node + (right_len - left_len)
+    if actual_right_range[3] == actual_left_range[3] then -- Ignore change in X when swapping vertically
+      cursor[2] = cursor[2] + (actual_right_range[4] - actual_left_range[4])
+    end
+    cursor[1] = cursor[1] + (actual_right_range[3] - actual_left_range[3])
   end
   return cursor
 end
