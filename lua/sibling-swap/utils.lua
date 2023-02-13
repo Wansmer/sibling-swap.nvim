@@ -64,7 +64,7 @@ local function is_suitable_nodes(node, named_sibling, sibling)
   return check_siblings(node, named_sibling)
     and (
       (is_space_between_allowed and has_space_between(node, named_sibling))
-      or is_allowed_sep(named_sibling)
+      or is_allowed_sep(sibling)
     )
 end
 
