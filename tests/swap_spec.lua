@@ -150,7 +150,7 @@ local test_data = {
   },
 }
 
-describe('Binary-swap: ', function()
+describe('Sibling-swap: ', function()
   for _, value in ipairs(test_data) do
     u._test(value)
   end
