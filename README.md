@@ -1,11 +1,11 @@
 # Sibling-swap.nvim: swaps closest siblings with Tree-Sitter
 
-Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attributes`, `pairs in objects`, `array's items` e.t.c., which places on same line and separated by `allowed_separators` or space.
+Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attributes`, `pairs in objects`, `array's items` e.t.c., which located near and separated by `allowed_separators` or space.
 
-* **Zero-config (almost)**: No need to setup specific language – should works from scratch with all languages supported by [Tree-Sitter](https://tree-sitter.github.io/tree-sitter/);
-* **Simple**: Just grab this node and move;
-* **Sticky-cursor**: The cursor follows the text on which it was called;
-* **Smart**: Able to replace operand in binary expressions and Mathematical operations to opposite[^1].
+- **Zero-config (almost)**: No need to setup specific language – should works from scratch with all languages supported by [Tree-Sitter](https://tree-sitter.github.io/tree-sitter/);
+- **Simple**: Just grab this node and move;
+- **Sticky-cursor**: The cursor follows the text on which it was called;
+- **Smart**: Able to replace operand in binary expressions and Mathematical operations to opposite[^1].
 
 > [^1]: If you want to swap operand and operators with by one key from anywhere in binary expressions, look at [binary-swap.nvim](https://github.com/Wansmer/binary-swap.nvim)
 
@@ -58,6 +58,7 @@ local DEFAUTL_SETTINGS = {
     ['>='] = '<=',
   },
   use_default_keymaps = true,
+  -- keybinding for movements to right or left (and up or down, if `allow_interline_swaps` is true)
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
     ['<C-,>'] = 'swap_with_left',
@@ -65,6 +66,8 @@ local DEFAUTL_SETTINGS = {
     ['<space>,'] = 'swap_with_left_with_opp',
   },
   ignore_injected_langs = false,
+  -- allow swaps across lines
+  allow_interline_swaps = true,
 }
 ```
 
@@ -77,6 +80,7 @@ If you need to change separator to the opposite value (e.g., in binary expressio
 If you want to disable something separator - set it to `false`.
 
 **Example**:
+
 ```lua
 require('sibling-swap').setup({
   allowed_separators = {
@@ -121,17 +125,17 @@ If you want to be able to swap node with injected language when cursor is placed
 </template>
 
 <script setup>
-  const one = { tw|o: 'two', one: 'one' }
-                  |
-      // If 'ignore_injected_langs' is 'true', Tree-Sitter recognize
-      // all <script> section as injected language and it will be
-      // ignored. 
+const one = { tw|o: 'two', one: 'one' }
+                |
+    // If 'ignore_injected_langs' is 'true', Tree-Sitter recognize
+    // all <script> section as injected language and it will be
+    // ignored.
 </script>
 ```
 
 ## Warning
 
-Plugin work with SIBLINGS. Its meaning what any siblings which placed in one line, has ‘allowed’ separator or space between
+Plugin work with SIBLINGS. Its meaning what any siblings which located near, has ‘allowed’ separator or space between
 each other and placed in same level in ‘treesitter’ tree - are suitable for swaps.
 It allows no setup each language by separate.
 It supposed, what you understand it before using.
@@ -141,7 +145,7 @@ It supposed, what you understand it before using.
 ```javascript
 function test (a) { return a; }
 //        |
-//  cursor here and you trigger 'swap_with_right', code will transform to  
+//  cursor here and you trigger 'swap_with_right', code will transform to
 function (a) test { return a; }
 // because 'test' and '(a)' on same line, on one level in tree and has space between each other
 ```

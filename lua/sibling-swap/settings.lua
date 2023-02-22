@@ -57,7 +57,7 @@ local DEFAUTL_SETTINGS = {
     ['<space>,'] = 'swap_with_left_with_opp',
   },
   ignore_injected_langs = false,
-  allow_interline_swaps = false,
+  allow_interline_swaps = true,
 }
 
 M.settings = DEFAUTL_SETTINGS
