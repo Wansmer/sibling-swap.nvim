@@ -106,9 +106,15 @@ function M.swap_siblings_ranges(siblings, swap_unnamed)
   local swapped = {}
   for idx = #siblings, 1, -1 do
     local text = query.get_node_text(siblings[idx], 0, { concat = false })
+
+    if type(text) == 'string' then
+      text = vim.split(text, '\n')
+    end
+
     if swap_unnamed and is_allowed_sep(siblings[idx]) then
       text = { ALLOWED_SEPARATORS[text[1]] }
     end
+
     local reversed_idx = #siblings - idx + 1
 
     local range = { siblings[reversed_idx]:range() }
