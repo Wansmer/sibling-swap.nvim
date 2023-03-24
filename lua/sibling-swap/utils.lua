@@ -1,4 +1,8 @@
 local query = require('vim.treesitter.query')
+local ts = require('vim.treesitter')
+-- `ts.get_node_text` for NVIM v0.9.0-dev-1275+gcbbf8bd66-dirty and newer
+-- see: https://github.com/neovim/neovim/pull/22761
+local get_node_text = ts.get_node_text or query.get_node_text
 local settings = require('sibling-swap.settings').settings
 
 local ALLOWED_SEPARATORS = settings.allowed_separators
@@ -105,7 +109,7 @@ end
 function M.swap_siblings_ranges(siblings, swap_unnamed)
   local swapped = {}
   for idx = #siblings, 1, -1 do
-    local text = query.get_node_text(siblings[idx], 0, { concat = false })
+    local text = get_node_text(siblings[idx], 0)
 
     if type(text) == 'string' then
       text = vim.split(text, '\n')
