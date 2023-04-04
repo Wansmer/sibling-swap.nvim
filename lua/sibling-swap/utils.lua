@@ -14,7 +14,7 @@ local M = {}
 ---@param node userdata TSNode instance
 ---@param sibling userdata TSNode instance
 ---@return boolean
-local function is_siblings_on_same_line(node, sibling)
+local function is_on_same_line(node, sibling)
   local range = { node:range() }
   local s_range = { sibling:range() }
   return range[1] == range[3]
@@ -32,7 +32,7 @@ local function is_both_siblings_named(node, sibling)
 end
 
 local function check_siblings(node, sibling)
-  return (ALLOW_INTERLINE_SWAPS or is_siblings_on_same_line(node, sibling))
+  return (ALLOW_INTERLINE_SWAPS or is_on_same_line(node, sibling))
     and is_both_siblings_named(node, sibling)
 end
 
@@ -63,8 +63,15 @@ local function is_suitable_nodes(node, named_sibling, sibling)
     return false
   end
 
+  local is_multiline = not is_on_same_line(node, named_sibling)
+    and ALLOW_INTERLINE_SWAPS
+
+  if is_multiline then
+    return check_siblings(node, named_sibling)
+  end
+
   local is_space_between_allowed = not has_unnamed(named_sibling, sibling)
-    and is_siblings_on_same_line(node, named_sibling)
+    and is_on_same_line(node, named_sibling)
   return check_siblings(node, named_sibling)
     and (
       (is_space_between_allowed and has_space_between(node, named_sibling))
