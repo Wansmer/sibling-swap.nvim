@@ -131,7 +131,7 @@ local test_data = {
     result = { 34, 35 },
   },
   {
-    desc = 'lang "%s", func "%s", on expression_statement, should do nothing',
+    desc = 'lang "%s", func "%s", on attribute, should moved to right',
     path = PATH_HTML,
     func = 'swap_with_right',
     lang = 'html',
@@ -140,7 +140,7 @@ local test_data = {
     result = { 0, 1 },
   },
   {
-    desc = 'lang "%s", func "%s", on expression_statement, should do nothing',
+    desc = 'lang "%s", func "%s", on attribute, should moved to left',
     path = PATH_HTML,
     func = 'swap_with_left',
     lang = 'html',
