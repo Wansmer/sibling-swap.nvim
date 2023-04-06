@@ -1,5 +1,5 @@
 ```javascript
-const renderDemo = (to, how) => ({ quistion: how, aciton: to });
+const renderDemo = (how, to) => ({ quistion: how, aciton: to });
 const str = '123' + 123;
 const isComplite = str.length >= 6;
 ```
