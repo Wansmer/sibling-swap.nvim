@@ -138,6 +138,7 @@ end
 function M.swap_siblings_ranges(siblings, swap_unnamed)
   local swapped = {}
   for idx = #siblings, 1, -1 do
+    local node = siblings[idx]
     local text = get_node_text(siblings[idx], 0)
 
     if type(text) == 'string' then
@@ -151,7 +152,7 @@ function M.swap_siblings_ranges(siblings, swap_unnamed)
     local reversed_idx = #siblings - idx + 1
 
     local range = { siblings[reversed_idx]:range() }
-    table.insert(swapped, { text = text, range = range })
+    table.insert(swapped, { text = text, range = range, node = node })
   end
   return swapped
 end
@@ -159,24 +160,71 @@ end
 ---Calculate new position for cursor
 ---@param repl table
 ---@param side string
+---@param cursor? integer[]
 ---@return table
-function M.calc_cursor(repl, side)
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local actual_right_range = repl[#repl].range
-  local actual_left_range = repl[1].range
+function M.calc_cursor(repl, side, cursor)
+  cursor = cursor or vim.api.nvim_win_get_cursor(0)
+  local right_range = repl[#repl].range
+  local left_range = repl[1].range
 
   if side == LEFT then
     local pos_in_node =
-      { cursor[1] - actual_right_range[1], cursor[2] - actual_right_range[2] }
-    cursor[2] = pos_in_node[2] + actual_left_range[2]
-    cursor[1] = pos_in_node[1] + actual_left_range[1]
+      { cursor[1] - right_range[1], cursor[2] - right_range[2] }
+    cursor[2] = pos_in_node[2] + left_range[2]
+    cursor[1] = pos_in_node[1] + left_range[1]
   else
-    if actual_right_range[3] == actual_left_range[3] then -- Ignore change in X when swapping vertically
-      cursor[2] = cursor[2] + (actual_right_range[4] - actual_left_range[4])
+    if right_range[3] == left_range[3] then -- Ignore change in X when swapping vertically
+      cursor[2] = cursor[2] + (right_range[4] - left_range[4])
     end
-    cursor[1] = cursor[1] + (actual_right_range[3] - actual_left_range[3])
+    cursor[1] = cursor[1] + (right_range[3] - left_range[3])
   end
   return cursor
+end
+
+---Calculate new range where node will be placed after swapping
+---@param repl table
+---@param side string
+---@return table
+local function calc_new_range(repl, side)
+  local range = side == LEFT and repl[#repl].range or repl[1].range
+  local sr, sc = range[1] + 1, range[2]
+  local er, ec = range[3] + 1, range[4]
+  return vim.tbl_flatten({
+    -- Need same logic like when new cursor calculating
+    M.calc_cursor(repl, side, { sr, sc }),
+    M.calc_cursor(repl, side, { er, ec }),
+  })
+end
+
+local function to_hl(repl, side)
+  local sr, sc, er, ec = unpack(calc_new_range(repl, side))
+  return { { sr - 1, sc }, { er - 1, ec } }
+end
+
+function M.highlight_node_at_cursor(repl, side)
+  local opts = settings.highlight_node_at_cursor
+
+  if opts then
+    local hl_group = 'SiblingSwapHL'
+    local hl_opts = { link = 'IncSearch' }
+    local ms = 500
+
+    if type(opts) == 'table' then
+      hl_opts = opts.hl_opts or hl_opts
+      ms = opts.ms or ms
+    end
+
+    vim.api.nvim_set_hl(0, hl_group, hl_opts)
+
+    -- Uses anonymous namespace to avoid conflict with defer_fn
+    local ns = vim.api.nvim_create_namespace('')
+    local range = to_hl(repl, side)
+    vim.highlight.range(0, ns, hl_group, range[1], range[2])
+
+    vim.defer_fn(function()
+      vim.api.nvim_buf_clear_namespace(0, ns, 1, -1)
+    end, ms)
+  end
 end
 
 return M
