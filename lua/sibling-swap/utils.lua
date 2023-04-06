@@ -27,27 +27,56 @@ end
 ---@param node userdata TSNode instance
 ---@param sibling userdata TSNode instance
 ---@return boolean
-local function is_both_siblings_named(node, sibling)
+local function is_both_named(node, sibling)
   return node:named() and sibling:named()
 end
 
 local function check_siblings(node, sibling)
   return (ALLOW_INTERLINE_SWAPS or is_on_same_line(node, sibling))
-    and is_both_siblings_named(node, sibling)
+    and is_both_named(node, sibling)
 end
 
 local function is_allowed_sep(sibling)
   return vim.tbl_contains(vim.tbl_keys(ALLOWED_SEPARATORS), sibling:type())
 end
 
----Checking if siblings have one or more spaces between each other
+---Sorting two nodes to determine their order
+---@param node TSNode
+---@param sibling TSNode
+---@return TSNode, TSNode
+local function sort_siblings(node, sibling)
+  local nr = { node:range() }
+  local sr = { sibling:range() }
+
+  if nr[1] < sr[1] then
+    return node, sibling
+  elseif sr[1] < nr[1] then
+    return sibling, node
+  else
+    if nr[2] < sr[2] then
+      return node, sibling
+    end
+    return sibling, node
+  end
+end
+
+---Checking if siblings have one or more whitespace chars (\s, \n) between each other
 ---@param node userdata TSNode instance
 ---@param sibling userdata TSNode instance
 ---@return boolean
-local function has_space_between(node, sibling)
+local function has_whitespace_between(node, sibling)
+  node, sibling = sort_siblings(node, sibling)
   local nr = { node:range() }
   local sr = { sibling:range() }
-  return math.max(nr[2], sr[2]) - math.min(sr[4], nr[4]) >= 1
+  local has_space = sr[2] - nr[4] >= 1
+
+  if is_on_same_line(node, sibling) then
+    return has_space
+  elseif ALLOW_INTERLINE_SWAPS then
+    return not (nr[1] == sr[1]) or has_space
+  end
+
+  return false
 end
 
 local function has_unnamed(named_sibling, sibling)
@@ -63,20 +92,12 @@ local function is_suitable_nodes(node, named_sibling, sibling)
     return false
   end
 
-  local is_multiline = not is_on_same_line(node, named_sibling)
-    and ALLOW_INTERLINE_SWAPS
-
-  if is_multiline then
-    return check_siblings(node, named_sibling)
+  if check_siblings(node, named_sibling) then
+    return (
+      not has_unnamed(named_sibling, sibling)
+      and has_whitespace_between(node, named_sibling)
+    ) or is_allowed_sep(sibling)
   end
-
-  local is_space_between_allowed = not has_unnamed(named_sibling, sibling)
-    and is_on_same_line(node, named_sibling)
-  return check_siblings(node, named_sibling)
-    and (
-      (is_space_between_allowed and has_space_between(node, named_sibling))
-      or is_allowed_sep(sibling)
-    )
 end
 
 ---Get candidates to swapping

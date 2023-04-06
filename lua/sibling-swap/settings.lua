@@ -29,6 +29,7 @@ local function skip_disabled(seps)
 end
 
 local DEFAUTL_SETTINGS = {
+  use_default_keymaps = true,
   allowed_separators = convert_to_dict({
     ',',
     ';',
@@ -50,15 +51,14 @@ local DEFAUTL_SETTINGS = {
     ['>'] = '<',
     ['>='] = '<=',
   }),
-  use_default_keymaps = true,
+  ignore_injected_langs = false,
+  allow_interline_swaps = true,
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
     ['<C-,>'] = 'swap_with_left',
     ['<space>.'] = 'swap_with_right_with_opp',
     ['<space>,'] = 'swap_with_left_with_opp',
   },
-  ignore_injected_langs = false,
-  allow_interline_swaps = true,
 }
 
 M.settings = DEFAUTL_SETTINGS
