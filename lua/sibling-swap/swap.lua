@@ -27,6 +27,8 @@ function M.swap_with(side, swap_unnamed)
     end
 
     pcall(vim.api.nvim_win_set_cursor, 0, cursor)
+
+    u.highlight_node_at_cursor(replacement, side)
   end
 end
 

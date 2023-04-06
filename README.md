@@ -58,6 +58,10 @@ local DEFAUTL_SETTINGS = {
     ['>='] = '<=',
   },
   use_default_keymaps = true,
+  -- Highlight recently swapped node. Can be boolean or table
+  -- If table: { ms = 500, hl_opts = { link = 'IncSearch' } }
+  -- `hl_opts` is a `val` from `nvim_set_hl()`
+  highlight_node_at_cursor = false,
   -- keybinding for movements to right or left (and up or down, if `allow_interline_swaps` is true)
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
