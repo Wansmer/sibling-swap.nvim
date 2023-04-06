@@ -53,6 +53,7 @@ local DEFAUTL_SETTINGS = {
   }),
   ignore_injected_langs = false,
   allow_interline_swaps = true,
+  interline_swaps_witout_separator = false,
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
     ['<C-,>'] = 'swap_with_left',

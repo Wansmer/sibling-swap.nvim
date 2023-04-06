@@ -7,6 +7,7 @@ local settings = require('sibling-swap.settings').settings
 
 local ALLOWED_SEPARATORS = settings.allowed_separators
 local ALLOW_INTERLINE_SWAPS = settings.allow_interline_swaps
+local INTERLINE_SWAPS_NO_SEP = settings.interline_swaps_witout_separator
 local LEFT = 'left'
 local M = {}
 
@@ -72,7 +73,7 @@ local function has_whitespace_between(node, sibling)
 
   if is_on_same_line(node, sibling) then
     return has_space
-  elseif ALLOW_INTERLINE_SWAPS then
+  elseif ALLOW_INTERLINE_SWAPS and INTERLINE_SWAPS_NO_SEP then
     return not (nr[1] == sr[1]) or has_space
   end
 
