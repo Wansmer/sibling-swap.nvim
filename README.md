@@ -68,6 +68,8 @@ local DEFAUTL_SETTINGS = {
   ignore_injected_langs = false,
   -- allow swaps across lines
   allow_interline_swaps = true,
+  -- swaps interline siblings without separators (no recommended, helpful for swaps html-like attributes)
+  interline_swaps_witout_separator = false,
 }
 ```
 
