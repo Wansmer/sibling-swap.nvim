@@ -34,12 +34,20 @@ const one = 1;
 
 console.log(123);
 
-const obj = {
-  one: 'one',
-  two: 'two',
-};
-const obj = {
-  two: 'two',
-  one: 'one',
-};
+console.log(
+  one,
+  two
+);
+console.log(
+  two,
+  one
+);
 
+const obj = {
+  one: 'one',
+  two: 'two',
+};
+const obj = {
+  two: 'two',
+  one: 'one',
+};

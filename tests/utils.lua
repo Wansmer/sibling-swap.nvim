@@ -7,8 +7,9 @@ local function open_ang_get_buf(path)
   return a.nvim_get_current_buf()
 end
 
-function M._test(v)
+function M._test(v, opts)
   local swaper = require('sibling-swap')
+  swaper.setup(opts)
   local desc = v.desc:format(v.lang, v.func)
 
   it(desc, function()
