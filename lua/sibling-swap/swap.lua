@@ -14,6 +14,9 @@ local M = {}
 function M.swap_with(side, swap_unnamed)
   swap_unnamed = swap_unnamed or false
 
+  local parser = vim.treesitter.get_parser(0)
+  parser:parse()
+
   local node = ts_utils.get_node_at_cursor(0, settings.ignore_injected_langs)
 
   local siblings = u.get_suitable_siblings(node, side)
