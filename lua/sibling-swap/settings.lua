@@ -28,6 +28,15 @@ local function skip_disabled(seps)
   return result
 end
 
+---User options to `sibling-swap.nvim`
+---@class UserOpts
+---@field use_default_keymaps boolean
+---@field allowed_separators table<string, string>
+---@field ignore_injected_langs boolean
+---@field allow_interline_swaps boolean
+---@field interline_swaps_witout_separator boolean
+---@field highlight_node_at_cursor boolean
+---@field keymaps table<string, string>
 local DEFAUTL_SETTINGS = {
   use_default_keymaps = true,
   allowed_separators = convert_to_dict({
@@ -63,6 +72,7 @@ local DEFAUTL_SETTINGS = {
   },
 }
 
+---@type UserOpts
 M.settings = DEFAUTL_SETTINGS
 
 M._set_keymaps = function()
@@ -71,6 +81,8 @@ M._set_keymaps = function()
   end
 end
 
+---Merge user options with default
+---@param opts UserOpts
 M._update_settings = function(opts)
   opts = opts or {}
 
