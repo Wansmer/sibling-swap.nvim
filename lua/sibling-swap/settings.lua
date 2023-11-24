@@ -86,6 +86,20 @@ end
 M._update_settings = function(opts)
   opts = opts or {}
 
+  if opts.interline_swaps_witout_separator ~= nil then
+    opts.interline_swaps_without_separator =
+      opts.interline_swaps_witout_separator
+    opts.interline_swaps_witout_separator = nil
+
+    vim.schedule(function()
+      vim.notify_once(
+        'Option `interline_swaps_witout_separator` is deprecated (typo). Use `interline_swaps_without_separator` instead',
+        vim.log.levels.WARN,
+        { title = 'sibling-swap.nvim' }
+      )
+    end)
+  end
+
   local seps = opts.allowed_separators
   if seps and not vim.tbl_isempty(seps) then
     opts.allowed_separators = convert_to_dict(seps)
