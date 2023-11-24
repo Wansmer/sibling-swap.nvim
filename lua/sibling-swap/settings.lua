@@ -34,7 +34,7 @@ end
 ---@field allowed_separators table<string, string>
 ---@field ignore_injected_langs boolean
 ---@field allow_interline_swaps boolean
----@field interline_swaps_witout_separator boolean
+---@field interline_swaps_without_separator boolean
 ---@field highlight_node_at_cursor boolean
 ---@field keymaps table<string, string>
 local DEFAUTL_SETTINGS = {
@@ -62,7 +62,7 @@ local DEFAUTL_SETTINGS = {
   }),
   ignore_injected_langs = false,
   allow_interline_swaps = true,
-  interline_swaps_witout_separator = false,
+  interline_swaps_without_separator = false,
   highlight_node_at_cursor = false,
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
