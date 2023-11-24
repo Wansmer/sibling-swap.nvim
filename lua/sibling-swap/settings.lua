@@ -34,7 +34,7 @@ end
 ---@field allowed_separators table<string, string>
 ---@field ignore_injected_langs boolean
 ---@field allow_interline_swaps boolean
----@field interline_swaps_witout_separator boolean
+---@field interline_swaps_without_separator boolean
 ---@field highlight_node_at_cursor boolean
 ---@field keymaps table<string, string>
 local DEFAUTL_SETTINGS = {
@@ -62,7 +62,7 @@ local DEFAUTL_SETTINGS = {
   }),
   ignore_injected_langs = false,
   allow_interline_swaps = true,
-  interline_swaps_witout_separator = false,
+  interline_swaps_without_separator = false,
   highlight_node_at_cursor = false,
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
@@ -85,6 +85,20 @@ end
 ---@param opts UserOpts
 M._update_settings = function(opts)
   opts = opts or {}
+
+  if opts.interline_swaps_witout_separator ~= nil then
+    opts.interline_swaps_without_separator =
+      opts.interline_swaps_witout_separator
+    opts.interline_swaps_witout_separator = nil
+
+    vim.schedule(function()
+      vim.notify_once(
+        'Option `interline_swaps_witout_separator` is deprecated (typo). Use `interline_swaps_without_separator` instead',
+        vim.log.levels.WARN,
+        { title = 'sibling-swap.nvim' }
+      )
+    end)
+  end
 
   local seps = opts.allowed_separators
   if seps and not vim.tbl_isempty(seps) then

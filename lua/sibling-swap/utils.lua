@@ -7,7 +7,7 @@ local settings = require('sibling-swap.settings').settings
 
 local ALLOWED_SEPARATORS = settings.allowed_separators
 local ALLOW_INTERLINE_SWAPS = settings.allow_interline_swaps
-local INTERLINE_SWAPS_NO_SEP = settings.interline_swaps_witout_separator
+local INTERLINE_SWAPS_NO_SEP = settings.interline_swaps_without_separator
 local LEFT = 'left'
 local M = {}
 

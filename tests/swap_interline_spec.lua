@@ -4,7 +4,7 @@ local PATH_JS = './tests/langs/index.js'
 local PATH_HTML = './tests/langs/index.html'
 
 local opts = {
-  interline_swaps_witout_separator = true,
+  interline_swaps_without_separator = true,
 }
 
 local test_data = {
