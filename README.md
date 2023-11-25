@@ -36,7 +36,7 @@ use({
 ### Default config
 
 ```lua
-local DEFAUTL_SETTINGS = {
+local DEFAULT_SETTINGS = {
   allowed_separators = {
     ',',
     ';',
@@ -122,12 +122,12 @@ If you want to be able to swap node with injected language when cursor is placed
 
 ```vue
 <template>
-  <app-item @click="clic|kHandler" class="class"/>
-                        |
-    <!-- The 'clickHandler' is a javascript and it have not any -->
-    <!-- siblings. If 'ignore_injected_langs' is 'false', the plugin will do nothing. -->
-    <!-- If 'ignore_injected_langs' is 'true', attribute '@click="clickHandler"' will -->
-    <!-- swap. But in section 'script' or 'stile' the plugin will not working. -->
+  <app-item @click="clic | kHandler" class="class" />
+  |
+  <!-- The 'clickHandler' is a javascript and it have not any -->
+  <!-- siblings. If 'ignore_injected_langs' is 'false', the plugin will do nothing. -->
+  <!-- If 'ignore_injected_langs' is 'true', attribute '@click="clickHandler"' will -->
+  <!-- swap. But in section 'script' or 'stile' the plugin will not working. -->
 </template>
 
 <script setup>
