@@ -36,7 +36,7 @@ use({
 ### Default config
 
 ```lua
-local DEFAUTL_SETTINGS = {
+local DEFAULT_SETTINGS = {
   allowed_separators = {
     ',',
     ';',
@@ -63,6 +63,7 @@ local DEFAUTL_SETTINGS = {
   -- `hl_opts` is a `val` from `nvim_set_hl()`
   highlight_node_at_cursor = false,
   -- keybinding for movements to right or left (and up or down, if `allow_interline_swaps` is true)
+  -- (`<C-,>` and `<C-.>` may not map to control chars at system level, so are sent by certain terminals as just `,` and `.`. In this case, just add the mappings you want.)
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
     ['<C-,>'] = 'swap_with_left',
@@ -122,12 +123,12 @@ If you want to be able to swap node with injected language when cursor is placed
 
 ```vue
 <template>
-  <app-item @click="clic|kHandler" class="class"/>
+  <app-item @click="clic|kHandler" class="class" />
                         |
-    <!-- The 'clickHandler' is a javascript and it have not any -->
-    <!-- siblings. If 'ignore_injected_langs' is 'false', the plugin will do nothing. -->
-    <!-- If 'ignore_injected_langs' is 'true', attribute '@click="clickHandler"' will -->
-    <!-- swap. But in section 'script' or 'stile' the plugin will not working. -->
+  <!-- The 'clickHandler' is a javascript and it have not any -->
+  <!-- siblings. If 'ignore_injected_langs' is 'false', the plugin will do nothing. -->
+  <!-- If 'ignore_injected_langs' is 'true', attribute '@click="clickHandler"' will -->
+  <!-- swap. But in section 'script' or 'stile' the plugin will not working. -->
 </template>
 
 <script setup>
