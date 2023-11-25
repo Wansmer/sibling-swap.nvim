@@ -63,6 +63,7 @@ local DEFAULT_SETTINGS = {
   -- `hl_opts` is a `val` from `nvim_set_hl()`
   highlight_node_at_cursor = false,
   -- keybinding for movements to right or left (and up or down, if `allow_interline_swaps` is true)
+  -- (`<C-,>` and `<C-.>` may not map to control chars at system level, so are sent by certain terminals as just `,` and `.`. In this case, just add the mappings you want.)
   keymaps = {
     ['<C-.>'] = 'swap_with_right',
     ['<C-,>'] = 'swap_with_left',
