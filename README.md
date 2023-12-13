@@ -75,6 +75,8 @@ local DEFAULT_SETTINGS = {
   allow_interline_swaps = true,
   -- swaps interline siblings without separators (no recommended, helpful for swaps html-like attributes)
   interline_swaps_without_separator = false,
+  -- Fallbacs for tiny settings for langs and nodes. See #fallback
+  fallback = {},
 }
 ```
 
@@ -123,8 +125,8 @@ If you want to be able to swap node with injected language when cursor is placed
 
 ```vue
 <template>
-  <app-item @click="clic|kHandler" class="class" />
-                        |
+  <app-item @click="clic | kHandler" class="class" />
+  |
   <!-- The 'clickHandler' is a javascript and it have not any -->
   <!-- siblings. If 'ignore_injected_langs' is 'false', the plugin will do nothing. -->
   <!-- If 'ignore_injected_langs' is 'true', attribute '@click="clickHandler"' will -->
@@ -138,6 +140,34 @@ const one = { tw|o: 'two', one: 'one' }
     // all <script> section as injected language and it will be
     // ignored.
 </script>
+```
+
+#### Fallback
+
+You can pass control to a third-party plugin or custom function if the node
+search process finds matches with the nodes listed here.
+
+```lua
+---@class FallbackItem
+---@field enable boolean|function(node: TSNode): boolean
+---@field action function(node: TSNode, side: string): void
+
+require('sibling-swap').setup({
+  ---@field fallback table<string, table<string, FallbackItem>>
+  fallback = {
+    ['javascript'] = {
+      string = {
+        enable = function(node)
+          -- some condition
+          return true
+        end,
+        action = function(node, side)
+          -- Do something instead of swapping
+        end,
+      },
+    },
+  },
+})
 ```
 
 ## Warning
