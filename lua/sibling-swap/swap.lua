@@ -15,9 +15,23 @@ function M.swap_with(side, swap_unnamed)
   swap_unnamed = swap_unnamed or false
 
   local parser = vim.treesitter.get_parser(0)
-  parser:parse()
+  parser:parse(true)
 
   local node = ts_utils.get_node_at_cursor(0, settings.ignore_injected_langs)
+  if not node then
+    return
+  end
+  local lang = u.get_node_lang(node)
+  local fb = settings.fallback[lang] and settings.fallback[lang][node:type()]
+    or nil
+  local is_fb = fb
+      and (type(fb.enable) == 'function' and fb.enable(node) or fb.enable)
+    or false
+
+  if fb and is_fb then
+    fb.action(node, side, swap_unnamed)
+    return
+  end
 
   local siblings = u.get_suitable_siblings(node, side)
   if siblings then

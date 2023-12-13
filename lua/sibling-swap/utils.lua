@@ -227,4 +227,22 @@ function M.highlight_node_at_cursor(repl, side)
   end
 end
 
+---Get language for node
+---@param node TSNode TSNode instance
+---@return string
+function M.get_node_lang(node)
+  local range = { node:range() }
+  local buf = vim.api.nvim_get_current_buf()
+  local ok, parser = pcall(
+    vim.treesitter.get_parser,
+    buf,
+    vim.treesitter.language.get_lang(vim.bo[buf].ft)
+  )
+  if not ok then
+    return ''
+  end
+  local current_tree = parser:language_for_range(range)
+  return current_tree:lang()
+end
+
 return M
