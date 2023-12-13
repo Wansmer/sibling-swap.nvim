@@ -28,6 +28,10 @@ local function skip_disabled(seps)
   return result
 end
 
+---@class FallbackItem
+---@field enable boolean|function(node: TSNode): boolean
+---@field action function(node: TSNode, side: string): void
+
 ---User options to `sibling-swap.nvim`
 ---@class UserOpts
 ---@field use_default_keymaps boolean
@@ -37,6 +41,7 @@ end
 ---@field interline_swaps_without_separator boolean
 ---@field highlight_node_at_cursor boolean
 ---@field keymaps table<string, string>
+---@field fallback table<string, table<string, FallbackItem>>
 local DEFAUTL_SETTINGS = {
   use_default_keymaps = true,
   allowed_separators = convert_to_dict({
@@ -70,6 +75,7 @@ local DEFAUTL_SETTINGS = {
     ['<space>.'] = 'swap_with_right_with_opp',
     ['<space>,'] = 'swap_with_left_with_opp',
   },
+  fallback = {},
 }
 
 ---@type UserOpts
