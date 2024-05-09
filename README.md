@@ -6,6 +6,7 @@ Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attr
 - **Simple**: Just grab this node and move;
 - **Sticky-cursor**: The cursor follows the text on which it was called;
 - **Smart**: Able to replace operand in binary expressions and Mathematical operations to opposite[^1].
+- **Dot-repeat**: Dot-repeat and `v:count` for all keymaps
 
 > [^1]: If you want to swap operand and operators with by one key from anywhere in binary expressions, look at [binary-swap.nvim](https://github.com/Wansmer/binary-swap.nvim)
 
