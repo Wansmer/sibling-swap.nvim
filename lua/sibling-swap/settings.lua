@@ -83,7 +83,12 @@ M.settings = DEFAUTL_SETTINGS
 
 M._set_keymaps = function()
   for keymap, action in pairs(M.settings.keymaps) do
-    vim.keymap.set('n', keymap, require('sibling-swap')[action])
+    vim.keymap.set(
+      'n',
+      keymap,
+      require('sibling-swap')[action],
+      { desc = 'sibling-swap: ' .. action }
+    )
   end
 end
 
