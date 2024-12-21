@@ -1,6 +1,6 @@
 # Sibling-swap.nvim: swaps closest siblings with Tree-Sitter
 
-Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attributes`, `pairs in objects`, `array's items` e.t.c., which located near and separated by `allowed_separators` or space.
+Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attributes`, `pairs in objects`, `array's items` etc., which located near and separated by `allowed_separators` or space.
 
 - **Zero-config (almost)**: No need to setup specific language – should works from scratch with all languages supported by [Tree-Sitter](https://tree-sitter.github.io/tree-sitter/);
 - **Simple**: Just grab this node and move;
@@ -110,10 +110,10 @@ require('sibling-swap').setup({
 `use_default_keymaps` - use default keymaps or not.
 `keymaps` - keymaps by default.
 
-If you want to change it, here is two way to do it:
+If you want to change it, here are two ways to do it:
 
-1. Change it in options (like above). Be sure what `use_default_keymaps` is 'true';
-2. Add `vim.keymap.set('n', 'YOUR_PREFER_KEYS', require('sibling-swap').swap_with_left)` anywhere in your config. Be sure what `use_default_keymaps` is 'false';
+1. Change it in options (like above). Be sure that `use_default_keymaps` is 'true';
+2. Add `vim.keymap.set('n', 'YOUR_PREFER_KEYS', require('sibling-swap').swap_with_left)` anywhere in your config. Be sure that `use_default_keymaps` is 'false';
 
 #### Injected languagas
 
@@ -173,10 +173,10 @@ require('sibling-swap').setup({
 
 ## Warning
 
-Plugin work with SIBLINGS. Its meaning what any siblings which located near, has ‘allowed’ separator or space between
-each other and placed in same level in ‘treesitter’ tree - are suitable for swaps.
-It allows no setup each language by separate.
-It supposed, what you understand it before using.
+The plugin works with SIBLINGS. It means that any sibling which is located near, has ‘allowed’ separator or space between
+each other and placed in same level in ‘treesitter’ tree - is suitable for swaps.
+You don't need to configure each language separately. 
+It is assumed that you understand it before using.
 
 **Examples**:
 
