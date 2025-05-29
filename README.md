@@ -14,8 +14,8 @@ Neovim plugin to swap places of siblings, e.g., `arguments`, `parameters`, `attr
 
 ## Requirements
 
-1. [Neovim 0.8+](https://github.com/neovim/neovim/releases)
-2. [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
+1. [Neovim 0.10+](https://github.com/neovim/neovim/releases)
+2. Installed tree-sitter's parsers (e.g. with [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 3. Read the [WARNING](#warning)
 
 ## Installation
