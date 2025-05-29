@@ -1,10 +1,5 @@
 local u = require('sibling-swap.utils')
 local settings = require('sibling-swap.settings').settings
-local ts_ok, ts_utils = pcall(require, 'nvim-treesitter.ts_utils')
-
-if not ts_ok then
-  return
-end
 
 local M = {}
 
@@ -15,9 +10,13 @@ function M.swap_with(side, swap_unnamed)
   swap_unnamed = swap_unnamed or false
 
   local parser = vim.treesitter.get_parser(0)
+  if not parser then
+    return
+  end
+
   parser:parse(true)
 
-  local node = ts_utils.get_node_at_cursor(0, settings.ignore_injected_langs)
+  local node = vim.treesitter.get_node()
   if not node then
     return
   end
