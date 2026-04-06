@@ -25,7 +25,6 @@ With [packer.nvim](https://github.com/wbthomason/packer.nvim):
 ```lua
 use({
   'Wansmer/sibling-swap.nvim',
-  requires = { 'nvim-treesitter' },
   config = function()
     require('sibling-swap').setup({--[[ your config ]]})
   end,
@@ -175,7 +174,7 @@ require('sibling-swap').setup({
 
 The plugin works with SIBLINGS. It means that any sibling which is located near, has ‘allowed’ separator or space between
 each other and placed in same level in ‘treesitter’ tree - is suitable for swaps.
-You don't need to configure each language separately. 
+You don't need to configure each language separately.
 It is assumed that you understand it before using.
 
 **Examples**:
